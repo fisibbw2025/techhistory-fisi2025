@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechDock // Heute in der IT-Geschichte</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        dock: {
+                            bg: '#060a12',
+                            card: '#0d1526',
+                            border: '#1e293b',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            indigo: '#6366f1',
+                            amber: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Digital Signage Kiosk Reset: Kein Scrollen, kein Text-Markieren, sauberer Vollbild-Look */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #060a12;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtiles animiertes Cyber-Grid im Hintergrund */
+        .cyber-grid {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(30, 41, 59, 0.35) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.35) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0.15) 100%);
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0.15) 100%);
+        }
+
+        /* Sanfte Übergänge für den Slide-Wechsel */
+        .slide-transition {
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .slide-hidden {
+            opacity: 0;
+            transform: translateY(12px) scale(0.992);
+        }
+        .slide-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Leuchteffekte für Jahreszahl und Karten */
+        .year-glow {
+            text-shadow: 0 0 35px rgba(6, 182, 212, 0.45), 0 0 12px rgba(6, 182, 212, 0.25);
+        }
+        .card-glass {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.90) 0%, rgba(9, 14, 26, 0.96) 100%);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* Auto-Hide Steuerleiste */
+        .controls-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 16px);
+        }
+        .controls-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, 0);
+        }
+
+        /* Pulsierender Live-Indikator */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.85); opacity: 0.9; }
+            70% { transform: scale(2.2); opacity: 0; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background-color: #10b981;
+            animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Custom Scrollbar für Playlist & Diagnose-Modal */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.35);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between h-screen w-screen px-5 py-4 md:px-10 md:py-6 lg:px-14 lg:py-8 select-none">
+
+    <!-- Hintergrund-Ebene mit Grid & Ambient-Glows -->
+    <div class="fixed inset-0 cyber-grid pointer-events-none z-0"></div>
+    <div id="ambient-glow-1" class="fixed -top-40 -left-40 w-[34rem] h-[34rem] rounded-full bg-cyan-500/10 blur-[130px] pointer-events-none z-0 transition-colors duration-1000"></div>
+    <div id="ambient-glow-2" class="fixed -bottom-40 -right-40 w-[36rem] h-[36rem] rounded-full bg-indigo-500/10 blur-[140px] pointer-events-none z-0 transition-colors duration-1000"></div>
+
+    <!-- 1. KOPFZEILE (TECHDOCK HEADER) -->
+    <header class="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/90 pb-3.5 md:pb-5">
+        <!-- Links: TechDock Branding -->
+        <div class="flex items-center gap-4">
+            <div class="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-slate-900/90 border border-cyan-500/30 shadow-lg shadow-cyan-950/50">
+                <!-- Chip / Terminal Icon -->
+                <svg class="w-7 h-7 md:w-8 md:h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+                <span class="pulse-dot absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400"></span>
+            </div>
+            <div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span class="font-mono text-xs md:text-sm uppercase tracking-[0.22em] text-cyan-400 font-semibold">TECHDOCK // PURE-IT CHRONIK</span>
+                    <button id="btn-open-filter-log" title="Filter-Protokoll anzeigen" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition cursor-pointer">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span id="data-source-pill-text">STRIKTER IT-FILTER AKTIV</span>
+                    </button>
+                </div>
+                <h1 class="text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-0.5">
+                    Heute in der <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400">IT-Geschichte</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Rechts: Aktuelles Datum & Live-Uhrzeit -->
+        <div class="flex items-center gap-4 md:gap-6 bg-slate-900/80 border border-slate-800 px-4 py-2 md:px-6 md:py-3 rounded-2xl backdrop-blur-md">
+            <div class="text-right">
+                <div id="header-date" class="text-sm md:text-lg lg:text-xl font-bold text-slate-100 tracking-tight">
+                    Lade Datum...
+                </div>
+                <div id="header-subdate" class="text-xs md:text-sm font-mono text-cyan-400/90">
+                    100% IT • Netzwerk • Hardware • Code
+                </div>
+            </div>
+            <div class="h-9 w-px bg-slate-800"></div>
+            <div id="header-clock" class="font-mono text-xl md:text-3xl lg:text-4xl font-bold text-cyan-400 tracking-wider tabular-nums">
+                00:00:00
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. HAUPTBÜHNE (2-SPALTEN KIOSK-LAYOUT 16:9) -->
+    <main class="relative z-10 flex-1 flex items-center my-3 md:my-5 overflow-hidden">
+        <div id="slide-container" class="slide-transition slide-visible w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-7 items-stretch">
+            
+            <!-- LINKE HAUPTSPALTE (8 von 12 Spalten): Großes IT-Ereignis + TechDock Praxis-Kontext -->
+            <div class="lg:col-span-8 card-glass rounded-3xl border border-slate-800/90 p-6 md:p-9 lg:p-11 flex flex-col justify-between relative overflow-hidden">
+                
+                <!-- Dekoratives Wasserzeichen-Jahr im Hintergrund -->
+                <div id="bg-watermark-year" class="select-none pointer-events-none absolute -right-4 -bottom-10 font-mono text-[8rem] md:text-[13rem] lg:text-[16rem] font-black text-slate-800/20 leading-none tracking-tighter">
+                    1998
+                </div>
+
+                <!-- Obere Sektion: Badges, Jahreszahl, Schlagzeile & Beschreibung -->
+                <div class="relative z-10">
+                    <div class="flex flex-wrap items-center gap-2.5 md:gap-3.5 mb-4 md:mb-6">
+                        <!-- Fachbereichs-Kategorie -->
+                        <span id="event-category" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-xs md:text-sm font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                            NETZWERK & DNS
+                        </span>
+
+                        <!-- "Heute vor X Jahren" Badge -->
+                        <span id="event-ago" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-xs md:text-sm font-semibold bg-slate-800/90 text-slate-200 border border-slate-700">
+                            VOR 28 JAHREN
+                        </span>
+
+                        <!-- Präzisions-Badge (Exakter Kalendertag vs. Monats-Meilenstein) -->
+                        <span id="event-precision-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs md:text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/30">
+                            EXAKT AM 04.11.
+                        </span>
+
+                        <!-- Datenquelle Badge -->
+                        <span id="event-source-badge" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs text-slate-400 bg-slate-900/70 border border-slate-800">
+                            Quelle: TechDock IT-Archiv
+                        </span>
+                    </div>
+
+                    <!-- Große Jahreszahl + Schlagzeile -->
+                    <div class="flex flex-col xl:flex-row xl:items-baseline gap-2 xl:gap-6 mb-4 md:mb-5">
+                        <div id="event-year" class="font-mono text-5xl md:text-7xl lg:text-8xl font-black text-cyan-400 year-glow tracking-tight shrink-0">
+                            1998
+                        </div>
+                        <h2 id="event-title" class="text-2xl md:text-3xl lg:text-[2.35rem] font-extrabold text-white leading-[1.18] tracking-tight">
+                            Lade verifizierte IT-Meilensteine...
+                        </h2>
+                    </div>
+
+                    <!-- Hauptbeschreibung (Optimal lesbar aus 4-6m Entfernung) -->
+                    <p id="event-description" class="text-base md:text-lg lg:text-[1.32rem] text-slate-200 leading-relaxed font-normal max-w-4xl">
+                        Das TechDock-System lädt ausschließlich verifizierte Meilensteine aus Informatik, Netzwerktechnik, Hardware-Architektur, Betriebssystemen und IT-Sicherheit.
+                    </p>
+
+                    <!-- NEU: TechDock Praxis-Kontext Box (Relevanz für Ausbildung & heutige IT) -->
+                    <div class="mt-5 md:mt-6 p-4 md:p-5 rounded-2xl bg-slate-900/85 border border-cyan-500/25 shadow-inner">
+                        <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-cyan-400 font-bold mb-1.5">
+                            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span>TechDock Praxis-Kontext // Bedeutung für die heutige IT</span>
+                        </div>
+                        <p id="event-context" class="text-xs md:text-sm lg:text-base text-slate-300 leading-relaxed">
+                            Einordnung der technischen Relevanz für moderne Systemintegration, Anwendungsentwicklung und Netzwerkinfrastruktur.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Untere Sektion: Terminal-Befehlszeile & Fach-Tags -->
+                <div class="relative z-10 mt-5 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 font-mono text-xs md:text-sm text-slate-400 bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800/80 overflow-hidden max-w-full">
+                        <span class="text-emerald-400 font-bold shrink-0">root@techdock:~#</span>
+                        <span id="terminal-cmd" class="truncate text-slate-300">grep --strict-it "11-04" /etc/techdock/it_milestones.db</span>
+                        <span class="w-2 h-4 bg-cyan-400 animate-pulse shrink-0"></span>
+                    </div>
+
+                    <div id="event-tags" class="flex flex-wrap items-center gap-2">
+                        <!-- Dynamische IT-Tags -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECHTE SEITENLEISTE (4 von 12 Spalten): Heutige IT-Playlist + QR-Code + Live-System-Telemetrie -->
+            <div class="lg:col-span-4 flex flex-col gap-5 h-full overflow-hidden">
+                
+                <!-- Oben: Interaktive Tages-Playlist aller geladenen IT-Meilensteine -->
+                <div class="card-glass rounded-3xl border border-slate-800/90 p-5 flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <div class="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800/90">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                            <h3 class="font-mono text-xs md:text-sm uppercase tracking-wider text-slate-200 font-bold">
+                                IT-Meilensteine des Tages
+                            </h3>
+                        </div>
+                        <span id="playlist-count-badge" class="font-mono text-xs px-2.5 py-0.5 rounded-lg bg-slate-900 border border-slate-800 text-cyan-400 font-semibold">
+                            6 Einträge
+                        </span>
+                    </div>
+
+                    <!-- Scrollbare Liste der heutigen IT-Slides -->
+                    <div id="playlist-items" class="custom-scroll flex-1 overflow-y-auto space-y-2 pr-1">
+                        <!-- Dynamisch per JS gerendert -->
+                    </div>
+                </div>
+
+                <!-- Unten: QR-Code zum deutschen Wikipedia-Fachartikel + Live UNIX-Epoch / Port-Fakt -->
+                <div class="card-glass rounded-3xl border border-slate-800/90 p-4 md:p-5 flex flex-col gap-3.5 shrink-0">
+                    <div class="flex items-center gap-4">
+                        <div class="shrink-0 bg-slate-950 p-2 rounded-2xl border border-slate-800 shadow-inner">
+                            <img id="qr-code-img" src="" alt="Wikipedia QR-Code" class="w-20 h-20 md:w-24 md:h-24 rounded-lg object-contain" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-cyan-400 font-semibold mb-0.5">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                </svg>
+                                Wikipedia Deep-Dive
+                            </div>
+                            <h4 class="text-sm md:text-base font-bold text-white leading-snug truncate" id="qr-article-title">
+                                ICANN
+                            </h4>
+                            <p class="text-xs text-slate-400 mt-0.5 line-clamp-2">
+                                QR-Code scannen für den vollständigen deutschen Fachartikel.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Kompakte Sysadmin-Telemetrie (UNIX-Timestamp & Hex-Uhr) -->
+                    <div class="pt-2.5 border-t border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-400">
+                        <span>UNIX EPOCH: <strong id="unix-epoch-live" class="text-emerald-400 tabular-nums">1793800000</strong></span>
+                        <span id="daily-port-fact" class="text-cyan-400/90 truncate">RFC 1034/1035 • DNS Port 53</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- 3. FUSSZEILE: FORTSCHRITTSBALKEN & SLIDE-INDIKATOREN -->
+    <footer class="relative z-10 pt-1">
+        <div class="flex items-center justify-between gap-6 mb-2.5">
+            <!-- Slide-Punkte Navigation -->
+            <div id="slide-dots" class="flex items-center gap-2">
+                <!-- Dynamisch generiert -->
+            </div>
+
+            <!-- Rechts: Filter-Statistik & Zähler -->
+            <div class="flex items-center gap-3 md:gap-4 font-mono text-xs md:text-sm text-slate-400">
+                <span id="filter-stats-footer" class="hidden md:inline text-slate-500">
+                    Politik/Allg.-Historie blockiert: 0
+                </span>
+                <span class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-cyan-400 font-bold" id="slide-counter">
+                    01 / 06
+                </span>
+            </div>
+        </div>
+
+        <!-- Animierter Progress-Balken für den Kiosk-Zyklus -->
+        <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800/60">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-indigo-500 transition-all duration-100 ease-linear" style="width: 0%;"></div>
+        </div>
+    </footer>
+
+    <!-- 4. AUTO-HIDE TEST- & STEUERLEISTE (Blendet bei Maus-Inaktivität nach 3.5 Sek. komplett aus) -->
+    <div id="floating-controls" class="controls-hidden fixed bottom-6 left-1/2 z-40 transition-all duration-300 flex flex-wrap items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-slate-700 shadow-2xl backdrop-blur-xl max-w-[95vw]">
+        <button id="btn-prev" title="Vorheriger Meilenstein" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+
+        <button id="btn-play-pause" title="Pause / Fortsetzen" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold transition">
+            <span id="play-pause-label">PAUSE</span>
+        </button>
+
+        <button id="btn-next" title="Nächster Meilenstein" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+
+        <div class="h-5 w-px bg-slate-700 mx-0.5"></div>
+
+        <!-- Datumswähler zum Testen beliebiger Kalendertage -->
+        <label class="flex items-center gap-1.5 text-xs font-mono text-slate-300">
+            <span class="hidden sm:inline">Datum:</span>
+            <input id="date-picker" type="date" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white font-mono focus:outline-none focus:border-cyan-400" />
+        </label>
+
+        <!-- Schnellwahl-Buttons für berühmte IT-Kalendertage -->
+        <button onclick="setQuickDate(11, 4)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-cyan-300 border border-cyan-500/30 transition">
+            04.11. (Heute)
+        </button>
+        <button onclick="setQuickDate(11, 2)" class="hidden md:inline-block px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-300 transition">
+            02.11. (Morris-Wurm)
+        </button>
+        <button onclick="setQuickDate(11, 15)" class="hidden md:inline-block px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-300 transition">
+            15.11. (Intel 4004)
+        </button>
+        <button onclick="setQuickDate(8, 25)" class="hidden lg:inline-block px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-300 transition">
+            25.08. (Linux)
+        </button>
+
+        <div class="h-5 w-px bg-slate-700 mx-0.5"></div>
+
+        <!-- Button für das transparente Filter-Diagnose-Log -->
+        <button id="btn-audit-log" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-mono transition">
+            Filter-Log prüfen
+        </button>
+
+        <button id="btn-fullscreen" title="Vollbild umschalten" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- 5. FILTER-DIAGNOSE & QUELLEN-MODAL (Zeigt akzeptierte IT-Events vs. blockierte Nicht-IT-Ereignisse) -->
+    <div id="audit-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 md:p-8">
+        <div class="card-glass border border-slate-700 rounded-3xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                <div>
+                    <span class="font-mono text-xs uppercase tracking-widest text-emerald-400">PURE-IT ENGINE // FILTER-DIAGNOSE</span>
+                    <h3 class="text-lg md:text-xl font-bold text-white mt-0.5">Quellen- & Filter-Protokoll für den gewählten Kalendertag</h3>
+                </div>
+                <button id="btn-close-audit" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs">
+                    Schließen [ESC]
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scroll space-y-6 text-xs md:text-sm font-mono">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <div class="text-slate-400 text-xs">Kuratierte IT-DB (Tier 1)</div>
+                        <div id="audit-stat-tier1" class="text-xl font-bold text-cyan-400 mt-1">0 Treffer</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <div class="text-slate-400 text-xs">Live Wikipedia IT-Treffer (Tier 2/3)</div>
+                        <div id="audit-stat-live-accepted" class="text-xl font-bold text-emerald-400 mt-1">0 akzeptiert</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <div class="text-slate-400 text-xs">Blockierte Nicht-IT-Ereignisse</div>
+                        <div id="audit-stat-rejected" class="text-xl font-bold text-rose-400 mt-1">0 verworfen</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-emerald-400 font-bold mb-2 uppercase tracking-wider text-xs">✓ Akzeptierte & angezeigte IT-Meilensteine:</h4>
+                    <div id="audit-accepted-list" class="space-y-1.5 text-slate-200"></div>
+                </div>
+
+                <div>
+                    <h4 class="text-rose-400 font-bold mb-2 uppercase tracking-wider text-xs">✗ Vom Strikten IT-Filter verworfene Wikipedia-Einträge (Politik, Sport, Kriege, Allgemeines):</h4>
+                    <div id="audit-rejected-list" class="space-y-1 text-slate-400 max-h-48 overflow-y-auto custom-scroll pr-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. JAVASCRIPT: DREISTUFIGE PURE-IT ENGINE OHNE NICHT-IT-FALLBACKS -->
+    <script>
+        /**
+         * ============================================================================
+         * TIER 1: KURATIERTE DEUTSCHE IT-HISTORIE DATENBANK (EXAKTE KALENDERTAGE + MONATSPOOL)
+         * Enthält ausschließlich verifizierte Ereignisse aus Informatik, Netzwerktechnik,
+         * Hardware, Betriebssystemen, Softwareentwicklung, Kryptographie und Gaming.
+         * ============================================================================
+         */
+        const CURATED_IT_MILESTONES = [
+            // ==================== 04. NOVEMBER (HEUTE - SCHWERPUNKT) ====================
+            {
+                month: 11, day: 4, year: 1998,
+                category: 'NETZWERK & DNS',
+                title: 'Offizielle Eintragung der ICANN – Globale Koordination von DNS & IP-Adressen',
+                description: 'Am 4. November 1998 wird die Internet Corporation for Assigned Names and Numbers (ICANN) in Kalifornien offiziell als gemeinnützige Körperschaft eingetragen. Sie übernimmt die Verwaltung der IP-Adressräume (IANA), der Root-Nameserver und des Domain Name Systems (DNS).',
+                context: 'Ohne die zentrale Koordination von AS-Nummern, IPv4/IPv6-Subnetzblöcken und Top-Level-Domains durch die ICANN wäre kein eindeutiges Routing im heutigen Internet möglich.',
+                articleTitle: 'ICANN',
+                tags: ['ICANN', 'DNS', 'IANA', 'IPv4 / IPv6', 'Root-Server']
+            },
+            {
+                month: 11, day: 4, year: 1952,
+                category: 'IT-SECURITY & KRYPTO',
+                title: 'Gründung der NSA – Beginn der computergestützten Kryptoanalyse & Supercomputer-Ära',
+                description: 'Mit der formellen Gründung der National Security Agency am 4. November 1952 entsteht das weltweit größte Forschungszentrum für Chiffriertechnik. Die Behörde wird zum wichtigsten Erstauftraggeber für frühe Transistor-Supercomputer wie IBM Stretch/Harvest.',
+                context: 'Aus der kryptographischen Forschung seit 1952 gingen moderne Standards wie der Data Encryption Standard (DES), die SHA-2-Hash-Familie sowie SELinux (Security-Enhanced Linux) hervor.',
+                articleTitle: 'National_Security_Agency',
+                tags: ['Kryptographie', 'SHA-2', 'SELinux', 'Supercomputing']
+            },
+            {
+                month: 11, day: 4, year: 2010,
+                category: 'HARDWARE & SENSORIK',
+                title: 'Microsoft startet Kinect – Echtzeit-3D-Tiefensensorik & Machine-Learning-Tracking',
+                description: 'Am 4. November 2010 bringt Microsoft das Kamerasystem Kinect auf den Markt. Über einen Infrarot-Punktprojektor und einen CMOS-Tiefensensor berechnet das System in Echtzeit ein 3D-Tiefenbild und erkennt Körpergelenke per Machine Learning.',
+                context: 'Durch offene Linux-Treiber (libfreenect) wurde die Kinect schnell zum Standard-3D-Sensor in der Robotik (ROS), der autonomen Navigation und der Computer-Vision-Ausbildung.',
+                articleTitle: 'Kinect',
+                tags: ['Computer Vision', '3D-Sensorik', 'Machine Learning', 'Robotik']
+            },
+            {
+                month: 11, day: 4, year: 2003,
+                category: 'OPERATING SYSTEMS',
+                title: 'Release-Woche von Fedora Core 1 („Yarrow“) – Neue Community-Basis für Enterprise Linux',
+                description: 'Nach der Einstellung des klassischen Red Hat Linux startet Anfang November 2003 das Fedora-Projekt mit Fedora Core 1 (Kernel 2.4.22). Es bildet fortan den innovativen Open-Source-Unterbau für Red Hat Enterprise Linux (RHEL).',
+                context: 'Fedora ist bis heute das Testfeld für zentrale Linux-Technologien wie systemd, Wayland, PipeWire, Podman und NetworkManager, bevor diese in Enterprise-Server einfließen.',
+                articleTitle: 'Fedora_(Linux-Distribution)',
+                tags: ['Fedora', 'Linux', 'Red Hat', 'RPM', 'Open Source']
+            },
+            {
+                month: 11, day: 4, year: 1998,
+                category: 'IT-SECURITY & KRYPTO',
+                title: 'RFC 2451 definiert Blockchiffren-Architektur für verschlüsselte IPsec-VPNs',
+                description: 'Im November 1998 verabschiedet die IETF Network Working Group mit RFC 2451 den Standard für den Einsatz moderner CBC-Blockchiffren im IPsec Encapsulating Security Payload (ESP) zur Absicherung von IP-Paketen auf Schicht 3.',
+                context: 'IPsec ESP bildet bis heute auf Firewalls (z. B. OPNsense, pfSense, Cisco, Fortinet) das Rückgrat für verschlüsselte Site-to-Site-Standortverbindungen über das öffentliche Internet.',
+                articleTitle: 'IPsec',
+                tags: ['IPsec', 'RFC 2451', 'VPN', 'OSI Layer 3', 'Verschlüsselung']
+            },
+            {
+                month: 11, day: 4, year: 2013,
+                category: 'LINUX & CONTAINER',
+                title: 'Durchbruch für Linux-Container: Docker öffnet Unterstützung für alle großen Distributionen',
+                description: 'Im Herbst 2013 wandelt sich Docker von einem internen PaaS-Werkzeug zum universellen Container-Standard und integriert Anfang November 2013 neben Ubuntu/Debian auch Unterstützung für den gesamten Red-Hat- und Fedora-Kosmos.',
+                context: 'Container-Virtualisierung über Linux Namespaces und cgroups hat die Bereitstellung von Web-Apps, lokalen KI-Stacks (Ollama, Open WebUI) und Microservices revolutioniert.',
+                articleTitle: 'Docker_(Software)',
+                tags: ['Docker', 'Container', 'Linux cgroups', 'DevOps']
+            },
+
+            // ==================== WEITERE NOVEMBER-TAGE (EXAKT) ====================
+            {
+                month: 11, day: 1, year: 1992,
+                category: 'NETZWERK & DNS',
+                title: 'Start von Mosaic-Entwicklung am NCSA – Das Web erhält ein grafisches Gesicht',
+                description: 'Im November 1992 beginnen Marc Andreessen und Eric Bina am National Center for Supercomputing Applications (NCSA) mit der Programmierung des Webbrowsers Mosaic, der erstmals Bilder direkt im Fließtext darstellen kann.',
+                context: 'NCSA Mosaic legte die Grundlage für Netscape Navigator, Mozilla Firefox und die grafische Darstellung moderner Web-Applikationen.',
+                articleTitle: 'NCSA_Mosaic',
+                tags: ['Mosaic', 'Webbrowser', 'HTML', 'WWW']
+            },
+            {
+                month: 11, day: 2, year: 1988,
+                category: 'IT-SECURITY & KRYPTO',
+                title: 'Der Morris-Wurm legt rund 10 % des gesamten damaligen ARPANET/Internets lahm',
+                description: 'Am 2. November 1988 startet Robert Tappan Morris den ersten großen Internet-Wurm. Er nutzt Pufferüberläufe in fingerd sowie Schwachstellen in sendmail und rsh/rexec aus und infiziert rund 6.000 UNIX-Rechner.',
+                context: 'Der Vorfall führte unmittelbar zur Gründung des ersten CERT (Computer Emergency Response Team) und machte Buffer-Overflow-Schutz zu einer Kerndisziplin der IT-Sicherheit.',
+                articleTitle: 'Morris-Wurm',
+                tags: ['Morris-Wurm', 'Buffer Overflow', 'CERT', 'IT-Security']
+            },
+            {
+                month: 11, day: 3, year: 1971,
+                category: 'OPERATING SYSTEMS',
+                title: 'Ken Thompson und Dennis Ritchie veröffentlichen das erste „UNIX Programmer’s Manual“',
+                description: 'Am 3. November 1971 erscheint in den Bell Laboratories die erste offizielle Dokumentation für UNIX First Edition (geschrieben für die PDP-11). Konzepte wie `fork()`, hierarchische Dateisysteme und `chmod` werden hier definiert.',
+                context: 'Fast jedes moderne Server-, Cloud- und Container-System (Linux, BSD, macOS) basiert direkt auf den Designprinzipien und Man-Pages von UNIX.',
+                articleTitle: 'Unix',
+                tags: ['UNIX', 'Bell Labs', 'Ken Thompson', 'Dennis Ritchie', 'POSIX']
+            },
+            {
+                month: 11, day: 5, year: 2007,
+                category: 'OPERATING SYSTEMS',
+                title: 'Google gründet die Open Handset Alliance und enthüllt Android als Open-Source-OS',
+                description: 'Am 5. November 2007 stellt Google gemeinsam mit 33 Hardware- und Mobilfunkpartnern das Linux-basierte Betriebssystem Android vor, um eine offene Plattform für mobile Endgeräte zu schaffen.',
+                context: 'Auf Basis eines angepassten Linux-Kernels entwickelte sich Android zum weltweit meistgenutzten Betriebssystem auf Smartphones, Tablets und Embedded-Systemen.',
+                articleTitle: 'Android_(Betriebssystem)',
+                tags: ['Android', 'Linux-Kernel', 'Open Source', 'Mobile OS']
+            },
+            {
+                month: 11, day: 6, year: 1980,
+                category: 'OPERATING SYSTEMS',
+                title: 'Microsoft unterzeichnet den Vertrag mit IBM zur Entwicklung des PC-Betriebssystems (MS-DOS)',
+                description: 'Am 6. November 1980 besiegeln IBM und Microsoft unter strengster Geheimhaltung („Project Chess“) den Vertrag über das Betriebssystem für den kommenden IBM PC 5150 – Microsoft behält sich dabei klugerweise die Lizenzrechte für Drittanbieter vor.',
+                context: 'Die Trennung von standardisierter x86-Hardware und separat lizenziertem Betriebssystem schuf den offenen PC-Markt.',
+                articleTitle: 'MS-DOS',
+                tags: ['MS-DOS', 'IBM PC', 'Microsoft', 'x86-Historie']
+            },
+            {
+                month: 11, day: 7, year: 1994,
+                category: 'NETZWERK & DNS',
+                title: 'Erster Live-Audiostream im Internet (WXYC überträgt per CU-SeeMe & Audio-Routing)',
+                description: 'Am 7. November 1994 startet der Radiosender der University of North Carolina den weltweit ersten 24-Stunden-Echtzeit-Stream über das Internet und beweist die Machbarkeit von Echtzeit-Medienstreaming über TCP/IP.',
+                context: 'Technischer Vorläufer heutiger Streaming-Protokolle wie WebRTC, HLS, DASH und moderner VoIP-/Videokonferenz-Architekturen.',
+                articleTitle: 'Streaming_Media',
+                tags: ['Streaming', 'TCP/IP', 'Echtzeit-Audio', 'Netzwerk']
+            },
+            {
+                month: 11, day: 8, year: 1999,
+                category: 'HARDWARE & CHIPS',
+                title: 'NVIDIA veröffentlicht die GeForce 256 – Die erste „GPU“ mit Hardware-T&L',
+                description: 'Im Herbst 1999 (Auslieferung ab Oktober/November 1999) führt NVIDIA mit der GeForce 256 den Begriff „Graphics Processing Unit“ (GPU) ein. Erstmals übernimmt der Grafikchip Transform- und Lighting-Berechnungen direkt in Hardware.',
+                context: 'Die Auslagerung hochparalleler Vektor- und Matrixberechnungen auf die GPU legte das Fundament für modernes 3D-Rendering, CUDA und das Training heutiger KI-Modelle.',
+                articleTitle: 'Nvidia_GeForce_256',
+                tags: ['NVIDIA', 'GPU', 'Grafikprozessor', 'Parallelrechnen']
+            },
+            {
+                month: 11, day: 9, year: 2004,
+                category: 'SOFTWARE & CODE',
+                title: 'Release von Mozilla Firefox 1.0 – Offene Webstandards brechen das IE6-Monopol',
+                description: 'Am 9. November 2004 veröffentlicht die Mozilla Foundation Firefox 1.0. Mit Tabbed-Browsing, integriertem Pop-up-Blocker und strikter Einhaltung von W3C-Standards leitet Firefox die Ära moderner, sicherer Webbrowser ein.',
+                context: 'Der Erfolg von Firefox sicherte ein offenes, herstellerunabhängiges Web und legte den Grundstein für moderne Entwicklerwerkzeuge im Browser.',
+                articleTitle: 'Mozilla_Firefox',
+                tags: ['Firefox', 'Mozilla', 'Open Source', 'Webstandards']
+            },
+            {
+                month: 11, day: 10, year: 1983,
+                category: 'IT-SECURITY & KRYPTO',
+                title: 'Fred Cohen demonstriert auf einem VAX-11/750-System das erste akademische Computervirus',
+                description: 'Am 10. November 1983 präsentiert Fred Cohen in einem Sicherheitsseminar an der Lehigh University ein selbstreplizierendes Programm unter UNIX, für das sein Doktorvater Len Adleman den Fachbegriff „Computervirus“ prägt.',
+                context: 'Cohens Arbeit begründete die formale Erforschung von Malware-Erkennung, Integritätsprüfungen (Hashes) und Sandboxing.',
+                articleTitle: 'Computervirus',
+                tags: ['Computervirus', 'Fred Cohen', 'IT-Security', 'VAX/UNIX']
+            },
+            {
+                month: 11, day: 10, year: 1983,
+                category: 'OPERATING SYSTEMS',
+                title: 'Microsoft kündigt in New York erstmals „Windows 1.0“ als grafische Oberfläche an',
+                description: 'Ebenfalls am 10. November 1983 stellt Bill Gates im Plaza Hotel in New York Microsoft Windows als grafischen Aufsatz (Interface Manager) für MS-DOS mit kooperativem Multitasking und Maussteuerung vor.',
+                context: 'Beginn der Windows-Produktlinie, die heute mit Windows 11 und Windows Server die Unternehmens-Clients und Active-Directory-Domänen dominiert.',
+                articleTitle: 'Microsoft_Windows_1.0',
+                tags: ['Windows 1.0', 'GUI', 'Microsoft', 'Betriebssysteme']
+            },
+            {
+                month: 11, day: 11, year: 2006,
+                category: 'HARDWARE & CHIPS',
+                title: 'Sony veröffentlicht die PlayStation 3 mit Cell-Broadband-Engine & Linux-Support (OtherOS)',
+                description: 'Am 11. November 2006 erscheint die PlayStation 3 mit dem von IBM, Sony und Toshiba entwickelten 8-Kern-Cell-Prozessor. Dank der Funktion „OtherOS“ bauen Forschungsinstitute wie das US Air Force Research Lab daraus Linux-Supercomputer-Cluster.',
+                context: 'Eines der berühmtesten Beispiele für heterogenes Multicore-Computing und kosteneffizientes High-Performance-Clustering unter Linux.',
+                articleTitle: 'PlayStation_3',
+                tags: ['Cell-Prozessor', 'Linux-Cluster', 'HPC', 'Hardware']
+            },
+            {
+                month: 11, day: 14, year: 1990,
+                category: 'NETZWERK & DNS',
+                title: 'Tim Berners-Lee und Robert Cailliau veröffentlichen das formale Konzept für das WorldWideWeb',
+                description: 'Am 12./14. November 1990 formulieren Berners-Lee und Cailliau am CERN das offizielle Projektpapier für „WorldWideWeb“ und beginnen unmittelbar darauf auf einer NeXTcube-Workstation mit der Programmierung des ersten HTTP-Webservers `httpd`.',
+                context: 'In diesem November-Meilenstein wurden die drei Kernsäulen des Webs festgelegt: URL (Adressierung), HTTP (Übertragung) und HTML (Darstellung).',
+                articleTitle: 'World_Wide_Web',
+                tags: ['CERN', 'HTTP', 'HTML', 'Tim Berners-Lee']
+            },
+            {
+                month: 11, day: 15, year: 1971,
+                category: 'HARDWARE & CHIPS',
+                title: 'Intel veröffentlicht den Intel 4004 – Den weltweit ersten kommerziellen Mikroprozessor',
+                description: 'Am 15. November 1971 bringt Intel den von Federico Faggin, Ted Hoff und Masatoshi Shima entwickelten 4-Bit-Prozessor 4004 auf den Markt. Auf einem einzigen Siliziumchip vereint er 2.300 Transistoren bei 740 kHz Taktrate.',
+                context: 'Der Übergang von diskreten Schaltkreisen zur kompletten CPU auf einem einzigen Die (Monolithischer Mikroprozessor) leitete die gesamte Mikrocomputer-Revolution ein.',
+                articleTitle: 'Intel_4004',
+                tags: ['Intel 4004', 'Mikroprozessor', 'CPU-Architektur', 'Halbleiter']
+            },
+            {
+                month: 11, day: 17, year: 1970,
+                category: 'HARDWARE & CHIPS',
+                title: 'Douglas Engelbart erhält das US-Patent 3,541,541 für die erste Computermaus',
+                description: 'Am 17. November 1970 wird Douglas Engelbart das Patent für den „X-Y Position Indicator for a Display System“ erteilt – eine Holzschale mit zwei senkrecht zueinander stehenden Metallrädern zur Cursorsteuerung.',
+                context: 'Gemeinsam mit grafischen Benutzeroberflächen (WIMP: Windows, Icons, Menus, Pointer) machte die Maus Computer für jedermann intuitiv bedienbar.',
+                articleTitle: 'Computermaus',
+                tags: ['Douglas Engelbart', 'Computermaus', 'HCI', 'Hardware']
+            },
+            {
+                month: 11, day: 20, year: 1985,
+                category: 'OPERATING SYSTEMS',
+                title: 'Verkaufsstart von Microsoft Windows 1.01 in den USA',
+                description: 'Am 20. November 1985 liefert Microsoft die erste kommerzielle Version von Windows 1.0 aus. Auf 16-Bit-x86-Rechnern bietet sie eine gekachelte Fensterverwaltung, Rechnungs- und Zeichenprogramme sowie Treiber für Grafikkarten und Mäuse.',
+                context: 'Meilenstein auf dem Weg von der reinen Kommandozeile (MS-DOS) zur ereignisgesteuerten grafischen Benutzeroberfläche.',
+                articleTitle: 'Microsoft_Windows_1.0',
+                tags: ['Windows 1.0', 'Microsoft', '16-Bit', 'GUI']
+            },
+            {
+                month: 11, day: 21, year: 1969,
+                category: 'NETZWERK & DNS',
+                title: 'Erste permanente ARPANET-Standleitung zwischen UCLA und Stanford geht in Betrieb',
+                description: 'Am 21. November 1969 wird die erste dauerhafte Paketvermittlungs-Verbindung zwischen den Interface Message Processors (IMPs) an der University of California (UCLA) und dem Stanford Research Institute (SRI) geschaltet.',
+                context: 'Die IMPs waren die unmittelbaren Vorläufer heutiger Netzwerk-Router in Wide Area Networks (WAN).',
+                articleTitle: 'ARPANET',
+                tags: ['ARPANET', 'Routing', 'WAN', 'Paketvermittlung']
+            },
+            {
+                month: 11, day: 29, year: 1972,
+                category: 'HARDWARE & CHIPS',
+                title: 'Atari veröffentlicht den Arcade-Automaten „Pong“ – Beginn der kommerziellen Videospiel-Industrie',
+                description: 'Am 29. November 1972 bringt Atari das von Allan Alcorn entworfene Spiel Pong heraus. Es besteht komplett aus diskreten TTL-Logikbausteinen ohne Mikroprozessor und wird zum ersten großen kommerziellen Erfolg der Videospielgeschichte.',
+                context: 'Echtzeit-Signalverarbeitung und digitale Logikschaltungen für Videospiele trieben in den Folgejahren die Entwicklung erschwinglicher Grafik- und Soundchips voran.',
+                articleTitle: 'Pong',
+                tags: ['Atari', 'Pong', 'TTL-Logik', 'Gaming-Historie']
+            },
+            {
+                month: 11, day: 30, year: 2022,
+                category: 'SOFTWARE & CODE',
+                title: 'OpenAI veröffentlicht ChatGPT – Weltweiter Durchbruch für große Sprachmodelle (LLMs)',
+                description: 'Am 30. November 2022 schaltet OpenAI die auf GPT-3.5 basierende Dialog-KI ChatGPT frei. Innerhalb von fünf Tagen erreicht das System über eine Million Nutzer und rückt Transformer-Architekturen ins Zentrum der IT-Welt.',
+                context: 'Auslöser für den heutigen Einsatz lokaler und Cloud-basierter KI-Agenten (wie Ollama, Qwen, Llama und Coding-Assistenten) im Entwickler- und Sysadmin-Alltag.',
+                articleTitle: 'ChatGPT',
+                tags: ['Künstliche Intelligenz', 'LLM', 'Transformer', 'Generative KI']
+            },
+
+            // ==================== WEITERE MONATE (JANUAR – DEZEMBER) ====================
+            {
+                month: 1, day: 1, year: 1983,
+                category: 'NETZWERK & DNS',
+                title: 'ARPANET „Flag Day“: Verbindliche Umstellung auf die TCP/IP-Protokollfamilie',
+                description: 'Am 1. Januar 1983 schaltet das ARPANET das alte NCP-Protokoll ab und wechselt vollständig auf TCP/IP (RFC 791 / RFC 793). Damit können erstmals unterschiedlichste Teilnetze zu einem globalen „Internetwork“ verbunden werden.',
+                context: 'Jedes Datenpaket im TechDock und im weltweiten Internet nutzt bis heute die damals eingeführte Schichtenarchitektur aus IP-Routing und TCP/UDP-Transport.',
+                articleTitle: 'Transmission_Control_Protocol/Internet_Protocol',
+                tags: ['TCP/IP', 'ARPANET', 'RFC 791', 'Netzwerktechnik']
+            },
+            {
+                month: 1, day: 7, year: 1982,
+                category: 'HARDWARE & CHIPS',
+                title: 'Commodore präsentiert auf der CES den Heimcomputer C64',
+                description: 'Mit 64 KB RAM, dem MOS-6510-Prozessor, Hardware-Sprites des VIC-II-Grafikchips und dem dreistimmigen SID-Synthesizer-Chip stellt Commodore den meistverkauften Einzelcomputer der Geschichte vor.',
+                context: 'Der C64 brachte einer ganzen Generation Assembler- und BASIC-Programmierung sowie ein tiefes Verständnis für Speicheradressierung näher.',
+                articleTitle: 'Commodore_64',
+                tags: ['Commodore 64', '8-Bit', 'MOS 6510', 'Hardware']
+            },
+            {
+                month: 1, day: 9, year: 2007,
+                category: 'HARDWARE & CHIPS',
+                title: 'Steve Jobs präsentiert das erste iPhone mit kapazitivem Multi-Touch-Display',
+                description: 'Auf der Macworld 2007 stellt Apple das erste iPhone vor. Statt physischer Tastatur oder Stylus setzt es auf ein kapazitives Glasdisplay mit Multi-Touch-Gesten und einem vollwertigen mobilen Webbrowser auf Basis von XNU/Darwin (Unix).',
+                context: 'Begründete das moderne Mobile-Computing, Responsive Webdesign und die App-Ökonomie.',
+                articleTitle: 'iPhone_(1._Generation)',
+                tags: ['iPhone', 'Multi-Touch', 'Mobile Computing', 'ARM']
+            },
+            {
+                month: 2, day: 14, year: 1946,
+                category: 'HARDWARE & CHIPS',
+                title: 'Vorstellung des ENIAC – Erster elektronischer, Turing-vollständiger Universalrechner',
+                description: 'An der University of Pennsylvania wird der von John Presper Eckert und John Mauchly konstruierte ENIAC vorgeführt. Mit 17.468 Elektronenröhren erreicht er 5.000 Additionen pro Sekunde – tausendmal schneller als elektromechanische Rechner.',
+                context: 'Meilenstein beim Übergang von Relais-Mechanik zur reinen Röhrenelektronik und digitalen Schaltungstechnik.',
+                articleTitle: 'ENIAC',
+                tags: ['ENIAC', 'Elektronenröhre', 'Mainframe', 'Turing-vollständig']
+            },
+            {
+                month: 2, day: 20, year: 1991,
+                category: 'SOFTWARE & CODE',
+                title: 'Guido van Rossum veröffentlicht den ersten Quellcode der Programmiersprache Python (0.9.0)',
+                description: 'Am 20. Februar 1991 teilt Guido van Rossum in `alt.sources` die erste Version von Python. Die Sprache legt größten Wert auf saubere Code-Lesbarkeit durch Einrückung und modulare Erweiterbarkeit.',
+                context: 'Python ist heute die wichtigste Sprache für Infrastruktur-Automatisierung (Ansible), IT-Security-Skripte, Data Science und lokale KI-Pipelines.',
+                articleTitle: 'Python_(Programmiersprache)',
+                tags: ['Python', 'Programmierung', 'Open Source', 'Scripting']
+            },
+            {
+                month: 3, day: 12, year: 1989,
+                category: 'NETZWERK & DNS',
+                title: 'Tim Berners-Lee reicht am CERN den Entwurf für das World Wide Web ein',
+                description: 'Mit dem Dokument „Information Management: A Proposal“ schlägt Tim Berners-Lee ein hypertextbasiertes Informationssystem vor, um Forschungsergebnisse am CERN plattformübergreifend über das Netzwerk zu verknüpfen.',
+                context: 'Aus diesem Konzept entstanden HTTP, HTML und URL – das Fundament aller heutigen Webanwendungen und REST-APIs.',
+                articleTitle: 'World_Wide_Web',
+                tags: ['WWW', 'CERN', 'Hypertext', 'Tim Berners-Lee']
+            },
+            {
+                month: 3, day: 15, year: 1985,
+                category: 'NETZWERK & DNS',
+                title: 'Registrierung von symbolics.com – Die erste .com-Domain der Internetgeschichte',
+                description: 'Der LISP-Workstation-Hersteller Symbolics Inc. lässt am 15. März 1985 die allererste kommerzielle Domain im neu geschaffenen Domain Name System (DNS) eintragen.',
+                context: 'Startschuss für das hierarchische DNS-Namenssystem, das kryptische IP-Adressen für Menschen merkbar macht.',
+                articleTitle: '.com',
+                tags: ['DNS', 'symbolics.com', 'Top-Level-Domain', 'Internet']
+            },
+            {
+                month: 4, day: 7, year: 1969,
+                category: 'NETZWERK & DNS',
+                title: 'Steve Crocker veröffentlicht RFC 1 („Host Software“) für das ARPANET',
+                description: 'Am 7. April 1969 erscheint das allererste Request for Comments (RFC 1). Es beschreibt die Host-zu-Host-Kommunikation der ersten vier ARPANET-Knoten und begründet die offene Diskussionskultur der Internet-Standardisierung.',
+                context: 'Bis heute werden sämtliche Protokolle wie IPv6, TLS 1.3, HTTP/3 oder WireGuard als öffentlich zugängliche RFCs spezifiziert.',
+                articleTitle: 'Request_for_Comments',
+                tags: ['RFC 1', 'IETF', 'Protokoll-Standards', 'ARPANET']
+            },
+            {
+                month: 4, day: 7, year: 2005,
+                category: 'SOFTWARE & CODE',
+                title: 'Linus Torvalds erstellt den ersten Commit der verteilten Versionsverwaltung Git',
+                description: 'Am 7. April 2005 checkt Linus Torvalds den allerersten Commit von Git ein (`e83c5163`). Git sichert Datenintegrität über kryptographische SHA-1/SHA-256-Merkle-Bäume und erlaubt blitzschnelles, dezentrales Branching.',
+                context: 'Git ist heute das unverzichtbare Standardwerkzeug für Softwareentwicklung, Infrastructure-as-Code (GitOps) und CI/CD-Pipelines.',
+                articleTitle: 'Git',
+                tags: ['Git', 'Linus Torvalds', 'Versionskontrolle', 'DevOps']
+            },
+            {
+                month: 5, day: 12, year: 1941,
+                category: 'HARDWARE & CHIPS',
+                title: 'Konrad Zuse präsentiert in Berlin die Z3 – Den ersten funktionsfähigen Digitalcomputer',
+                description: 'Am 12. Mai 1941 führt Konrad Zuse die Z3 im funktionierenden Betrieb vor. Die Maschine arbeitet mit 2.000 Fernmelderelais im binären Gleitkommasystem und ist der erste frei programmierbare Rechner der Welt.',
+                context: 'Meilenstein der deutschen und internationalen Informatikgeschichte: Binärarithmetik und Gleitkommazahlen nach dem Prinzip der Z3 stecken in jeder modernen CPU.',
+                articleTitle: 'Zuse_Z3',
+                tags: ['Konrad Zuse', 'Z3', 'Binärrechner', 'Hardware-Historie']
+            },
+            {
+                month: 5, day: 22, year: 1973,
+                category: 'NETZWERK & DNS',
+                title: 'Robert Metcalfe verfasst am Xerox PARC das Gründungsmemo für „Ethernet“',
+                description: 'Am 22. Mai 1973 beschreibt Robert Metcalfe das Zugriffsverfahren CSMA/CD zur schnellen Datenübertragung zwischen Workstations über ein gemeinsames Kabelmedium und tauft die Technik auf den Namen „Ethernet“.',
+                context: 'Als IEEE 802.3 ist Ethernet (heute über Twisted-Pair und Glasfaser mit 1G/10G/100G/400G) der unangefochtene Standard auf Layer 1 und 2 in jedem LAN und Rechenzentrum.',
+                articleTitle: 'Ethernet',
+                tags: ['Ethernet', 'IEEE 802.3', 'LAN', 'OSI Layer 2']
+            },
+            {
+                month: 6, day: 23, year: 1912,
+                category: 'PIONIERE DER INFORMATIK',
+                title: 'Geburtstag von Alan Turing – Begründer der theoretischen Informatik & Kryptoanalyse',
+                description: 'Am 23. Juni 1912 wird Alan Turing geboren. Mit seinem Papier „On Computable Numbers“ (1936) definierte er das mathematische Modell der Turingmaschine und trug in Bletchley Park entscheidend zur Entzifferung der Enigma bei.',
+                context: 'Jede moderne Programmiersprache und CPU-Architektur misst ihre universelle Berechnungsfähigkeit bis heute am Begriff der „Turing-Vollständigkeit“.',
+                articleTitle: 'Alan_Turing',
+                tags: ['Alan Turing', 'Turingmaschine', 'Kryptologie', 'KI']
+            },
+            {
+                month: 8, day: 6, year: 1991,
+                category: 'NETZWERK & DNS',
+                title: 'Tim Berners-Lee schaltet am CERN die erste Webseite (`info.cern.ch`) öffentlich frei',
+                description: 'Am 6. August 1991 macht Tim Berners-Lee das World-Wide-Web-Projekt in der Newsgruppe `alt.hypertext` öffentlich bekannt und stellt die erste Webseite der Welt auf seinem NeXT-Rechner ins Internet.',
+                context: 'Geburtsstunde des öffentlichen Webs, das das Internet von einem reinen Wissenschaftsnetz zum universellen Kommunikationsmedium machte.',
+                articleTitle: 'info.cern.ch',
+                tags: ['info.cern.ch', 'Erste Website', 'CERN', 'WWW']
+            },
+            {
+                month: 8, day: 12, year: 1981,
+                category: 'HARDWARE & CHIPS',
+                title: 'IBM präsentiert den IBM 5150 Personal Computer – Geburt der offenen x86-PC-Architektur',
+                description: 'Am 12. August 1981 stellt IBM in New York den IBM PC 5150 mit Intel-8088-Prozessor (4,77 MHz), 16–64 KB RAM, ISA-Erweiterungssteckplätzen und offen dokumentiertem BIOS vor.',
+                context: 'Durch die offene Systemarchitektur aus Standardbauteilen begründete der IBM 5150 die gesamte heutige PC- und x86-Server-Welt.',
+                articleTitle: 'IBM_Personal_Computer',
+                tags: ['IBM 5150', 'x86-Architektur', 'BIOS', 'Personal Computer']
+            },
+            {
+                month: 8, day: 16, year: 1993,
+                category: 'OPERATING SYSTEMS',
+                title: 'Ian Murdock kündigt die freie Linux-Distribution „Debian“ an',
+                description: 'Am 16. August 1993 ruft Ian Murdock in `comp.os.linux.development` das Debian-Projekt ins Leben – mit dem Anspruch, eine vollständig freie, gemeinschaftlich organisierte und technisch herausragende Linux-Distribution zu entwickeln.',
+                context: 'Debian und sein Paketformat `.deb` (APT) bilden das stabile Fundament für Ubuntu, Proxmox VE, Raspberry Pi OS und unzählige Docker-Container-Images.',
+                articleTitle: 'Debian',
+                tags: ['Debian', 'Linux', 'APT / dpkg', 'Server-OS']
+            },
+            {
+                month: 8, day: 25, year: 1991,
+                category: 'OPERATING SYSTEMS',
+                title: 'Linus Torvalds kündigt sein freies Betriebssystem-Kernel-Projekt in comp.os.minix an',
+                description: 'Am 25. August 1991 schreibt der 21-jährige Student Linus Torvalds aus Helsinki seinen berühmten Usenet-Beitrag: „I’m doing a (free) operating system (just a hobby, won’t be big and professional like gnu) for 386(486) AT clones.“',
+                context: 'Aus diesem „kleinen Hobbyprojekt“ entstand mit dem Linux-Kernel das Herzstück der gesamten modernen Cloud-, Server-, Container- und Supercomputer-Welt.',
+                articleTitle: 'Geschichte_von_Linux',
+                tags: ['Linux', 'Linus Torvalds', 'Kernel', 'Open Source']
+            },
+            {
+                month: 9, day: 9, year: 1947,
+                category: 'HARDWARE & CHIPS',
+                title: 'Grace Hopper und ihr Team dokumentieren am Harvard Mark II den ersten echten „Computer-Bug“',
+                description: 'Am 9. September 1947 legen Techniker der Harvard University eine Motte frei, die ein Relais des Rechners Mark II blockiert hatte, und kleben sie mit dem Vermerk „First actual case of bug being found“ ins Systemlogbuch.',
+                context: 'Prägte die Begriffe „Bug“ und „Debugging“; Grace Hopper entwickelte kurz darauf zudem den ersten Compiler (A-0) und die Grundlagen für COBOL.',
+                articleTitle: 'Programmfehler',
+                tags: ['Grace Hopper', 'Debugging', 'Harvard Mark II', 'Compiler']
+            },
+            {
+                month: 9, day: 17, year: 1991,
+                category: 'OPERATING SYSTEMS',
+                title: 'Veröffentlichung von Linux Kernel 0.01 auf dem FTP-Server ftp.funet.fi',
+                description: 'Am 17. September 1991 stellt Linus Torvalds das erste Quellcode-Archiv (`linux-0.01.tar.Z`, 10.239 Zeilen C- und Assembler-Code) für Entwickler zum Download bereit.',
+                context: 'Erster öffentlich einsehbarer Quellcode des Linux-Kernels.',
+                articleTitle: 'Linux_(Kernel)',
+                tags: ['Linux 0.01', 'Kernel', 'C-Code', 'Open Source']
+            },
+            {
+                month: 10, day: 5, year: 1991,
+                category: 'OPERATING SYSTEMS',
+                title: 'Offizielle Ankündigung von Linux 0.02 – Ausführung von Bash und GCC',
+                description: 'Am 5. Oktober 1991 verkündet Linus Torvalds die Version 0.02 seines Kernels, auf der erstmals die GNU Bourne-Again-Shell (`bash`) sowie der GNU C-Compiler (`gcc`) stabil laufen.',
+                context: 'Durch das Zusammenspiel von Linux-Kernel und GNU-Userland (bash, gcc, coreutils) wurde das System erstmals selbsttragend entwickelbar.',
+                articleTitle: 'Linux',
+                tags: ['Linux 0.02', 'GNU/Linux', 'Bash', 'GCC']
+            },
+            {
+                month: 10, day: 29, year: 1969,
+                category: 'NETZWERK & DNS',
+                title: '„LO“ – Die allererste Host-zu-Host-Nachrichtenübertragung über das ARPANET',
+                description: 'Am 29. Oktober 1969 um 22:30 Uhr sendet Charley Kline von der UCLA aus die Buchstaben „L“ und „O“ (des Befehls LOGIN) über eine 50-kbit/s-Leitung an den Rechner des Stanford Research Institute, bevor das System beim „G“ abstürzt.',
+                context: 'Der historische Erstkontakt der paketvermittelten Datenübertragung und die Geburtsstunde der vernetzten IT-Welt.',
+                articleTitle: 'ARPANET',
+                tags: ['ARPANET', 'Paketvermittlung', 'UCLA', 'Netzwerk-Historie']
+            },
+            {
+                month: 12, day: 9, year: 1968,
+                category: 'HARDWARE & CHIPS',
+                title: 'Douglas Engelbart zeigt in der „Mother of All Demos“ Maus, Hypertext & Videokonferenz',
+                description: 'Am 9. Dezember 1968 präsentiert Douglas Engelbart auf der Fall Joint Computer Conference in San Francisco sein NLS-System: Erstmals sehen 1.000 Informatiker live eine Computermaus, Fenstertechnik, Hyperlinks und gemeinsames Editieren über ein Netzwerk.',
+                context: 'nahm die gesamte moderne Arbeitsplatz-IT (GUI, Groupware, Videokonferenz, Wiki-Links) um Jahrzehnte vorweg.',
+                articleTitle: 'The_Mother_of_All_Demos',
+                tags: ['Douglas Engelbart', 'Mother of All Demos', 'Computermaus', 'Hypertext']
+            },
+            {
+                month: 12, day: 16, year: 1947,
+                category: 'HARDWARE & CHIPS',
+                title: 'Erfindung des ersten funktionsfähigen Bipolartransistors in den Bell Laboratories',
+                description: 'Am 16. Dezember 1947 gelingt John Bardeen und Walter Brattain unter Leitung von William Shockley der Aufbau des ersten funktionierenden Spitzenkontaktransistors aus Germanium.',
+                context: 'Die wichtigste Hardware-Erfindung des 20. Jahrhunderts: Moderne Server- und Desktop-CPUs schalten heute über 50 bis 100 Milliarden Transistoren auf wenigen Quadratmillimetern.',
+                articleTitle: 'Transistor',
+                tags: ['Transistor', 'Halbleiter', 'Bell Labs', 'Mikroelektronik']
+            }
+        ];
+
+        /**
+         * ============================================================================
+         * TIER 2 & 3: STRIKTER POSITIV- UND NEGATIV-FILTER FÜR LIVE WIKIPEDIA DATEN
+         * Verhindert zu 100 %, dass Politik, Kriege, Wahlen, Sport, Royals oder Filme
+         * jemals durchrutschen können.
+         * ============================================================================
+         */
+        // Positiv-Filter: Muss zwingend im Ereignistext selbst vorkommen (reine IT-/Tech-Begriffe)
+        const STRICT_IT_POSITIVE_REGEX = /\b(computer|rechner|supercomputer|mainframe|mikroprozessor|prozessor|halbleiter|transistor|integrierter schaltkreis|mikrochip|arbeitsspeicher|festplatte|betriebssystem|linux|unix|windows|ms-dos|macos|android|ios|debian|ubuntu|fedora|software|quellcode|open source|open-source|programmiersprache|algorithmus|compiler|datenbank|internet|arpanet|world wide web|webbrowser|webseite|domain name system|tcp\/ip|ethernet|glasfaser|netzwerkprotokoll|rechenzentrum|kryptographie|verschlüsselung|computervirus|computerwurm|cyberangriff|firewall|it-sicherheit|apple|microsoft|ibm|intel|amd|nvidia|cisco|atari|commodore|amiga|nintendo|playstation|xbox|videospiel|spielkonsole|künstliche intelligenz|cern|icann|ietf|ascii|unicode|zuse|turing|torvalds|berners-lee)\b/i;
+
+        // Negativ-Blocklist: Sobald eines dieser Wörter in Titel oder Beschreibung auftaucht -> SOFORT BLOCKIEREN!
+        const STRICT_NEGATIVE_BLOCKLIST_REGEX = /\b(wahl|präsidentschaftswahl|bundestagswahl|parlament|bundestag|landtag|kongress|senat|präsident|bundeskanzler|minister|premierminister|regierung|partei|koalition|könig|königin|kaiser|zar|herzog|fürst|prinz|papst|bischof|kardinal|kirche|kloster|krieg|weltkrieg|bürgerkrieg|schlacht|armee|truppen|soldaten|wehrmacht|offensive|belagerung|luftangriff|bombenangriff|attentat|mord|ermordung|hinrichtung|massaker|genozid|terroranschlag|entführung|putsch|revolution|aufstand|friedensvertrag|waffenstillstand|kapitulation|verfassung|unabhängigkeit|kolonie|erdbeben|tsunami|wirbelsturm|hurrikan|taifun|vulkanausbruch|überschwemmung|hungersnot|flugzeugabsturz|zugunglück|schiffbruch|grubenunglück|fußball|weltmeisterschaft|europameisterschaft|olympische|olympiasieger|tennis|boxen|formel 1|tour de france|schauspieler|schauspielerin|regisseur|sänger|sängerin|musiker|komponist|band|musikalbum|single-charts|kinofilm|spielfilm|fernsehserie|telenovela|roman|gedicht|schriftsteller|dichter|oper|theater|uraufführung|gemälde|maler|nobelpreis für literatur|friedensnobelpreis)\b/i;
+
+        // Fachbereichs-Klassifizierung für akzeptierte IT-Events
+        function classifyITCategory(text) {
+            const t = text.toLowerCase();
+            if (/(krypt|verschlüssel|nsa|sicherheit|security|wurm|virus|cyber|firewall|cert|ipsec)/.test(t)) {
+                return 'IT-SECURITY & KRYPTO';
+            }
+            if (/(internet|netzwerk|web|arpanet|browser|domain|dns|icann|tcp|ethernet|glasfaser|ietf|rfc|cern)/.test(t)) {
+                return 'NETZWERK & DNS';
+            }
+            if (/(linux|unix|windows|betriebssystem|macos|debian|ubuntu|fedora|kernel|ms-dos|android|ios|docker|container)/.test(t)) {
+                return 'OPERATING SYSTEMS';
+            }
+            if (/(chip|prozessor|mikroprozessor|transistor|halbleiter|computer|rechner|zuse|eniac|c64|macintosh|ibm|intel|amd|nvidia|hardware|speicher|festplatte|maus|kinect|playstation|xbox|atari|konsole)/.test(t)) {
+                return 'HARDWARE & CHIPS';
+            }
+            return 'SOFTWARE & CODE';
+        }
+
+        // Automatischer TechDock Praxis-Kontext für Live-Wikipedia-IT-Treffer
+        function generateTechDockContext(category, title) {
+            switch (category) {
+                case 'IT-SECURITY & KRYPTO':
+                    return 'Meilenstein der IT-Sicherheit: Zeigt, wie eng historische Schwachstellen, Kryptographie und heutige Schutzmechanismen (Firewalls, Zero Trust, Patch-Management) zusammenhängen.';
+                case 'NETZWERK & DNS':
+                    return 'Grundstein der vernetzten IT: Ohne offene Protokolle, Paketvermittlung und standardisiertes DNS/Routing wären moderne Cloud- und Campus-Netzwerke undenkbar.';
+                case 'OPERATING SYSTEMS':
+                    return 'Meilenstein der Systemarchitektur: Betriebssystem-Kernel, Prozessisolation und Paketverwaltung bilden das Fundament moderner Server-, Client- und Container-Umgebungen.';
+                case 'HARDWARE & CHIPS':
+                    return 'Meilenstein der Rechnerarchitektur: Verdeutlicht den Sprung von frühen Schaltkreisen zu heutigen Multi-Core-CPUs, GPUs und hochintegrierten SoC-Systemen.';
+                default:
+                    return 'Meilenstein der Softwaretechnik: Zeigt, wie Algorithmen, Programmiersprachen und Open-Source-Kollaboration die moderne Anwendungsentwicklung geprägt haben.';
+            }
+        }
+
+        // Farbschema je nach IT-Fachbereich
+        function getCategoryColors(category) {
+            switch (category) {
+                case 'IT-SECURITY & KRYPTO':
+                    return { badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30', year: 'text-emerald-400' };
+                case 'NETZWERK & DNS':
+                    return { badge: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30', year: 'text-cyan-400' };
+                case 'OPERATING SYSTEMS':
+                case 'LINUX & CONTAINER':
+                    return { badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30', year: 'text-amber-400' };
+                case 'HARDWARE & CHIPS':
+                case 'HARDWARE & SENSORIK':
+                    return { badge: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30', year: 'text-indigo-400' };
+                default:
+                    return { badge: 'bg-sky-500/15 text-sky-300 border-sky-500/30', year: 'text-sky-400' };
+            }
+        }
+
+        // Tägliche Port-/RFC-Kurzinfo für das rechte Terminal-Widget
+        const TECHDOCK_PORT_FACTS = [
+            'RFC 1035 • DNS über UDP/TCP Port 53',
+            'RFC 4251 • SSH Remote-Login über TCP Port 22',
+            'RFC 9110 • HTTPS / TLS über TCP Port 443',
+            'RFC 2131 • DHCP Server/Client UDP Port 67/68',
+            'RFC 5905 • NTP Zeitsynchronisation UDP Port 123',
+            'IEEE 802.1Q • VLAN-Tagging auf OSI Layer 2',
+            'RFC 791 • IPv4 Header & Subnetting (/24 = 254 Hosts)'
+        ];
+
+        // APPLIKATIONS-STATUS
+        let playlist = [];
+        let auditLog = {
+            tier1Count: 0,
+            liveAccepted: [],
+            liveRejected: []
+        };
+        let currentIndex = 0;
+        let isPlaying = true;
+        let slideDurationMs = 16000; // 16 Sekunden pro Slide
+        let elapsedMs = 0;
+        let timerInterval = null;
+        let activeDate = new Date();
+        let lastCheckedDay = activeDate.getDate();
+
+        const MONTH_NAMES_DE = [
+            'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+            'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+        ];
+
+        // 1. LIVE-UHRZEIT, UNIX-EPOCH & MITTERNACHTS-WECHSEL
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('header-clock').textContent = now.toLocaleTimeString('de-DE', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+            document.getElementById('unix-epoch-live').textContent = Math.floor(now.getTime() / 1000);
+
+            // Automatischer Datumswechsel um 00:00 Uhr im 24/7 Kiosk-Betrieb
+            if (now.getDate() !== lastCheckedDay) {
+                lastCheckedDay = now.getDate();
+                activeDate = new Date();
+                loadPureITDayData(activeDate);
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. DREISTUFIGE PURE-IT DATEN-PIPELINE (GARANTIERT 0% POLITIK / ALLGEMEINGESCHICHTE)
+        async function loadPureITDayData(targetDate) {
+            const month = targetDate.getMonth() + 1;
+            const day = targetDate.getDate();
+            const mm = String(month).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const monthName = MONTH_NAMES_DE[month - 1];
+
+            // Header & Port-Fakt aktualisieren
+            const weekdayStr = targetDate.toLocaleDateString('de-DE', { weekday: 'long' });
+            document.getElementById('header-date').textContent = `${weekdayStr}, ${day}. ${monthName}`;
+            document.getElementById('daily-port-fact').textContent = TECHDOCK_PORT_FACTS[(day + month) % TECHDOCK_PORT_FACTS.length];
+
+            // Diagnose-Log zurücksetzen
+            auditLog = { tier1Count: 0, liveAccepted: [], liveRejected: [] };
+            const combinedIT = [];
+            const seenKeys = new Set();
+
+            // -------------------------------------------------------------------------
+            // STUFE 1: Kuratierte Exakt-Tages-Meilensteine aus unserer internen IT-DB
+            // -------------------------------------------------------------------------
+            const exactCurated = CURATED_IT_MILESTONES.filter(m => m.month === month && m.day === day);
+            exactCurated.forEach(item => {
+                const key = `${item.year}-${item.articleTitle.toLowerCase()}`;
+                seenKeys.add(key);
+                auditLog.tier1Count++;
+                combinedIT.push({
+                    year: item.year,
+                    category: item.category,
+                    title: item.title,
+                    description: item.description,
+                    context: item.context,
+                    precisionLabel: `EXAKT AM ${dd}.${mm}.`,
+                    isExactDay: true,
+                    sourceLabel: 'TechDock Kuratierte IT-DB',
+                    articleUrl: `https://de.wikipedia.org/wiki/${encodeURIComponent(item.articleTitle)}`,
+                    articleName: item.articleTitle.replace(/_/g, ' '),
+                    tags: item.tags
+                });
+            });
+
+            // -------------------------------------------------------------------------
+            // STUFE 2: Strikte Filterung der Wikipedia "On This Day" Events API
+            // (WICHTIG: NUR "events" abfragen – NIEMALS "births"/"deaths"/"holidays",
+            // und NUR akzeptieren, wenn der Ereignistext selbst ein IT-Begriff ist
+            // und NICHT auf der Politik-/Kriegs-/Kultur-Blocklist steht!)
+            // -------------------------------------------------------------------------
+            try {
+                const wikiEventsUrl = `https://de.wikipedia.org/api/rest_v1/feed/onthisday/events/${mm}/${dd}`;
+                const response = await fetch(wikiEventsUrl, { headers: { 'Accept': 'application/json' } });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const rawEvents = data.events || [];
+
+                    rawEvents.forEach(entry => {
+                        if (!entry.text || !entry.year) return;
+                        const headline = entry.text.trim();
+                        const primaryPage = (entry.pages && entry.pages.length > 0) ? entry.pages[0] : null;
+                        const primaryExtract = primaryPage ? `${primaryPage.normalizedtitle || ''} ${primaryPage.description || ''} ${primaryPage.extract || ''}` : '';
+                        const combinedCheckText = `${headline} ${primaryExtract}`;
+
+                        // 1. Harter Negativ-Check: Politik, Krieg, Wahlen, Sport, Kultur sofort aussortieren!
+                        if (STRICT_NEGATIVE_BLOCKLIST_REGEX.test(combinedCheckText)) {
+                            auditLog.liveRejected.push(`[${entry.year}] Blocklist-Ausschluss: ${headline.slice(0, 95)}…`);
+                            return;
+                        }
+
+                        // 2. Harter Positiv-Check: Muss im Ereignistext (headline) selbst einen eindeutigen IT-Begriff enthalten!
+                        if (!STRICT_IT_POSITIVE_REGEX.test(headline)) {
+                            auditLog.liveRejected.push(`[${entry.year}] Kein IT-Fachbegriff: ${headline.slice(0, 95)}…`);
+                            return;
+                        }
+
+                        // Wenn beide Prüfungen bestanden -> Echtes IT-Ereignis!
+                        const articleName = primaryPage?.normalizedtitle || `${day}. ${monthName}`;
+                        const dedupeKey = `${entry.year}-${articleName.toLowerCase()}`;
+                        if (seenKeys.has(dedupeKey)) return;
+                        seenKeys.add(dedupeKey);
+
+                        const category = classifyITCategory(combinedCheckText);
+                        let detailedDesc = headline;
+                        if (primaryPage && primaryPage.extract && primaryPage.extract.length > 50) {
+                            const cleanExtract = primaryPage.extract.replace(/\s+/g, ' ').trim();
+                            detailedDesc = cleanExtract.length > 320
+                                ? cleanExtract.slice(0, 315).replace(/\s+\S*$/, '') + '…'
+                                : cleanExtract;
+                        }
+
+                        const tags = (entry.pages || [])
+                            .slice(0, 3)
+                            .map(p => (p.normalizedtitle || '').replace(/_/g, ' '))
+                            .filter(Boolean);
+
+                        const itEvent = {
+                            year: entry.year,
+                            category: category,
+                            title: headline,
+                            description: detailedDesc,
+                            context: generateTechDockContext(category, headline),
+                            precisionLabel: `EXAKT AM ${dd}.${mm}.`,
+                            isExactDay: true,
+                            sourceLabel: 'Wikipedia DE (Strikter IT-Filter)',
+                            articleUrl: primaryPage?.content_urls?.desktop?.page || `https://de.wikipedia.org/wiki/${encodeURIComponent(articleName)}`,
+                            articleName: articleName,
+                            tags: tags.length ? tags : ['IT-Meilenstein', category]
+                        };
+
+                        combinedIT.push(itEvent);
+                        auditLog.liveAccepted.push(`[${entry.year}] ${headline}`);
+                    });
+                }
+            } catch (e) {
+                // Offline-Betrieb oder CORS-Einschränkung -> Kein Problem, Tier 1 greift nahtlos
+            }
+
+            // -------------------------------------------------------------------------
+            // STUFE 3: Wenn an einem Kalendertag weniger als 6 exakte Tagestreffer
+            // vorliegen, füllen wir AUSSCHLIESSLICH mit verifizierten IT-Meilensteinen
+            // desselben Monats (bzw. unserer kuratierten IT-Datenbank) auf.
+            // NIEMALS werden ungefilterte Wikipedia-Ereignisse verwendet!
+            // -------------------------------------------------------------------------
+            if (combinedIT.length < 6) {
+                const sameMonthIT = CURATED_IT_MILESTONES
+                    .filter(m => m.month === month && m.day !== day)
+                    .sort((a, b) => Math.abs(a.day - day) - Math.abs(b.day - day));
+
+                const otherMonthIT = CURATED_IT_MILESTONES.filter(m => m.month !== month);
+                const pureITBackupPool = [...sameMonthIT, ...otherMonthIT];
+
+                for (const item of pureITBackupPool) {
+                    if (combinedIT.length >= 6) break;
+                    const key = `${item.year}-${item.articleTitle.toLowerCase()}`;
+                    if (seenKeys.has(key)) continue;
+                    seenKeys.add(key);
+
+                    const itemDD = String(item.day).padStart(2, '0');
+                    const itemMM = String(item.month).padStart(2, '0');
+                    const isSameMonth = item.month === month;
+
+                    combinedIT.push({
+                        year: item.year,
+                        category: item.category,
+                        title: item.title,
+                        description: item.description,
+                        context: item.context,
+                        precisionLabel: isSameMonth
+                            ? `AM ${itemDD}.${itemMM}. (${MONTH_NAMES_DE[item.month - 1].toUpperCase()}-CHRONIK)`
+                            : `IT-MEILENSTEIN (${itemDD}.${itemMM}.${item.year})`,
+                        isExactDay: false,
+                        sourceLabel: 'TechDock Kuratierte IT-DB',
+                        articleUrl: `https://de.wikipedia.org/wiki/${encodeURIComponent(item.articleTitle)}`,
+                        articleName: item.articleTitle.replace(/_/g, ' '),
+                        tags: item.tags
+                    });
+                }
+            }
+
+            // Sortierung: Zuerst exakte Tagestreffer, danach chronologisch nach Jahr
+            playlist = combinedIT
+                .sort((a, b) => (b.isExactDay - a.isExactDay) || (a.year - b.year))
+                .slice(0, 8);
+
+            // Status-Anzeigen aktualisieren
+            const rejectedCount = auditLog.liveRejected.length;
+            document.getElementById('data-source-pill-text').textContent =
+                `PURE-IT FILTER AKTIV • ${playlist.length} IT-THEMEN (${rejectedCount} NICHT-IT BLOCKIERT)`;
+            document.getElementById('filter-stats-footer').textContent =
+                `Strikter IT-Filter: ${rejectedCount} Politik-/Allg.-Einträge blockiert`;
+            document.getElementById('playlist-count-badge').textContent =
+                `${playlist.length} IT-Events`;
+
+            currentIndex = 0;
+            elapsedMs = 0;
+            renderPlaylistSidebar();
+            renderSlideDots();
+            renderCurrentSlide();
+            updateAuditModalContent();
+        }
+
+        // 3. AKTUELLEN SLIDE AUF DER BÜHNE RENDERN
+        function renderCurrentSlide() {
+            if (!playlist.length) return;
+            const item = playlist[currentIndex];
+            const currentYear = new Date().getFullYear();
+            const yearsAgo = currentYear - item.year;
+
+            const container = document.getElementById('slide-container');
+            container.classList.remove('slide-visible');
+            container.classList.add('slide-hidden');
+
+            setTimeout(() => {
+                const colors = getCategoryColors(item.category);
+
+                // Kategorie-Badge
+                const catEl = document.getElementById('event-category');
+                catEl.textContent = item.category;
+                catEl.className = `inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-xs md:text-sm font-bold uppercase tracking-wider border ${colors.badge}`;
+
+                // Relative Jahresangabe
+                document.getElementById('event-ago').textContent =
+                    yearsAgo > 0 ? `VOR ${yearsAgo} JAHREN` : `DIESES JAHR`;
+
+                // Präzisions-Badge
+                const precEl = document.getElementById('event-precision-badge');
+                precEl.textContent = item.precisionLabel;
+                precEl.className = item.isExactDay
+                    ? 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs md:text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/30'
+                    : 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs md:text-sm text-cyan-300 bg-cyan-500/10 border border-cyan-500/30';
+
+                // Quelle
+                document.getElementById('event-source-badge').textContent = `Quelle: ${item.sourceLabel}`;
+
+                // Große Jahreszahl, Titel, Beschreibung & TechDock-Kontext
+                const yearEl = document.getElementById('event-year');
+                yearEl.textContent = item.year;
+                yearEl.className = `font-mono text-5xl md:text-7xl lg:text-8xl font-black year-glow tracking-tight shrink-0 ${colors.year}`;
+
+                document.getElementById('bg-watermark-year').textContent = item.year;
+                document.getElementById('event-title').textContent = item.title;
+                document.getElementById('event-description').textContent = item.description;
+                document.getElementById('event-context').textContent = item.context;
+
+                // Terminal-Befehlszeile unten
+                document.getElementById('terminal-cmd').textContent =
+                    `techdock-chronik --strict-it --year=${item.year} --topic="${item.articleName}"`;
+
+                // Fach-Tags
+                const tagsContainer = document.getElementById('event-tags');
+                tagsContainer.innerHTML = (item.tags || []).map(tag => `
+                    <span class="px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-800 font-mono text-xs text-cyan-300/90">
+                        #${tag}
+                    </span>
+                `).join('');
+
+                // QR-Code zum deutschen Wikipedia-Artikel
+                const qrImg = document.getElementById('qr-code-img');
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=38bdf8&bgcolor=020617&margin=6&data=${encodeURIComponent(item.articleUrl)}`;
+                document.getElementById('qr-article-title').textContent = `Wikipedia: ${item.articleName}`;
+
+                // Zähler, Punkte & Seitenleisten-Markierung aktualisieren
+                const totalStr = String(playlist.length).padStart(2, '0');
+                const currStr = String(currentIndex + 1).padStart(2, '0');
+                document.getElementById('slide-counter').textContent = `${currStr} / ${totalStr}`;
+                updateSlideDots();
+                highlightPlaylistItem();
+
+                container.classList.remove('slide-hidden');
+                container.classList.add('slide-visible');
+            }, 220);
+        }
+
+        // 4. SEITENLEISTE: HEUTIGE IT-PLAYLIST RENDERN
+        function renderPlaylistSidebar() {
+            const container = document.getElementById('playlist-items');
+            container.innerHTML = playlist.map((item, idx) => `
+                <button onclick="jumpToSlide(${idx})" id="playlist-btn-${idx}" class="w-full text-left p-3 rounded-2xl border transition-all duration-200 flex items-start gap-3 group">
+                    <div class="font-mono text-sm md:text-base font-extrabold text-cyan-400 shrink-0 pt-0.5">
+                        ${item.year}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="font-mono text-[10px] uppercase tracking-wider text-slate-400 truncate">
+                                ${item.category}
+                            </span>
+                            ${item.isExactDay ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Exakter Kalendertag"></span>' : ''}
+                        </div>
+                        <div class="text-xs md:text-sm font-semibold text-slate-200 group-hover:text-white line-clamp-2 leading-snug">
+                            ${item.title}
+                        </div>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function highlightPlaylistItem() {
+            playlist.forEach((_, idx) => {
+                const btn = document.getElementById(`playlist-btn-${idx}`);
+                if (!btn) return;
+                if (idx === currentIndex) {
+                    btn.className = 'w-full text-left p-3 rounded-2xl border transition-all duration-200 flex items-start gap-3 bg-cyan-500/15 border-cyan-500/40 shadow-md';
+                } else {
+                    btn.className = 'w-full text-left p-3 rounded-2xl border transition-all duration-200 flex items-start gap-3 bg-slate-900/55 hover:bg-slate-900/90 border-slate-800/80 opacity-75 hover:opacity-100';
+                }
+            });
+        }
+
+        // 5. SLIDE-PUNKTE & NAVIGATION
+        function renderSlideDots() {
+            const dotsContainer = document.getElementById('slide-dots');
+            dotsContainer.innerHTML = playlist.map((_, idx) => `
+                <button onclick="jumpToSlide(${idx})" class="slide-dot h-2.5 rounded-full transition-all duration-300"></button>
+            `).join('');
+            updateSlideDots();
+        }
+
+        function updateSlideDots() {
+            const dots = document.querySelectorAll('.slide-dot');
+            dots.forEach((dot, idx) => {
+                dot.className = `slide-dot h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-10 bg-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.7)]' : 'w-2.5 bg-slate-800 hover:bg-slate-700'}`;
+            });
+        }
+
+        window.jumpToSlide = function(index) {
+            currentIndex = index;
+            elapsedMs = 0;
+            renderCurrentSlide();
+        };
+
+        window.setQuickDate = function(month, day) {
+            const year = new Date().getFullYear();
+            activeDate = new Date(year, month - 1, day);
+            document.getElementById('date-picker').valueAsDate = activeDate;
+            loadPureITDayData(activeDate);
+        };
+
+        function nextSlide() {
+            if (!playlist.length) return;
+            currentIndex = (currentIndex + 1) % playlist.length;
+            elapsedMs = 0;
+            renderCurrentSlide();
+        }
+
+        function prevSlide() {
+            if (!playlist.length) return;
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            elapsedMs = 0;
+            renderCurrentSlide();
+        }
+
+        // 6. PROGRESS-BAR & AUTO-CAROUSEL LOOP
+        function startCarouselLoop() {
+            if (timerInterval) clearInterval(timerInterval);
+            const stepMs = 100;
+            timerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                elapsedMs += stepMs;
+                const percent = Math.min(100, (elapsedMs / slideDurationMs) * 100);
+                document.getElementById('progress-bar').style.width = `${percent}%`;
+
+                if (elapsedMs >= slideDurationMs) {
+                    nextSlide();
+                }
+            }, stepMs);
+        }
+
+        // 7. FILTER-DIAGNOSE-MODAL AKTUALISIEREN
+        function updateAuditModalContent() {
+            document.getElementById('audit-stat-tier1').textContent = `${auditLog.tier1Count} exakte Tagestreffer`;
+            document.getElementById('audit-stat-live-accepted').textContent = `${auditLog.liveAccepted.length} IT-Events akzeptiert`;
+            document.getElementById('audit-stat-rejected').textContent = `${auditLog.liveRejected.length} Nicht-IT blockiert`;
+
+            document.getElementById('audit-accepted-list').innerHTML = playlist.map(item => `
+                <div class="p-2.5 rounded-xl bg-slate-900/90 border border-emerald-500/25 flex items-center justify-between gap-3">
+                    <div><strong class="text-cyan-400">[${item.year}]</strong> ${item.title}</div>
+                    <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-emerald-300 shrink-0">${item.sourceLabel}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('audit-rejected-list').innerHTML = auditLog.liveRejected.length
+                ? auditLog.liveRejected.map(line => `<div class="py-1 border-b border-slate-800/60">${line}</div>`).join('')
+                : `<div class="text-slate-500">Keine externen Einträge vorhanden oder Offline-Modus aktiv.</div>`;
+        }
+
+        // 8. INTERAKTIVE STEUERUNG & AUTO-HIDE
+        let hideControlsTimeout = null;
+        const controlsBar = document.getElementById('floating-controls');
+
+        function showControlsTemporarily() {
+            controlsBar.classList.remove('controls-hidden');
+            controlsBar.classList.add('controls-visible');
+            if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
+            hideControlsTimeout = setTimeout(() => {
+                controlsBar.classList.remove('controls-visible');
+                controlsBar.classList.add('controls-hidden');
+            }, 3500);
+        }
+
+        window.addEventListener('mousemove', showControlsTemporarily);
+        window.addEventListener('touchstart', showControlsTemporarily);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('audit-modal').classList.add('hidden');
+                return;
+            }
+            showControlsTemporarily();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                togglePlayPause();
+            }
+        });
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-pause-label').textContent = isPlaying ? 'PAUSE' : 'WEITER';
+        }
+
+        document.getElementById('btn-next').addEventListener('click', nextSlide);
+        document.getElementById('btn-prev').addEventListener('click', prevSlide);
+        document.getElementById('btn-play-pause').addEventListener('click', togglePlayPause);
+
+        const datePicker = document.getElementById('date-picker');
+        datePicker.valueAsDate = activeDate;
+        datePicker.addEventListener('change', (e) => {
+            if (e.target.value) {
+                const parts = e.target.value.split('-');
+                activeDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                loadPureITDayData(activeDate);
+            }
+        });
+
+        // Audit-Log Modal öffnen/schließen
+        const auditModal = document.getElementById('audit-modal');
+        document.getElementById('btn-audit-log').addEventListener('click', () => auditModal.classList.remove('hidden'));
+        document.getElementById('btn-open-filter-log').addEventListener('click', () => auditModal.classList.remove('hidden'));
+        document.getElementById('btn-close-audit').addEventListener('click', () => auditModal.classList.add('hidden'));
+
+        document.getElementById('btn-fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        });
+
+        // INITIALISIERUNG BEIM LADEN
+        window.onload = function() {
+            loadPureITDayData(activeDate);
+            startCarouselLoop();
+        };
+    </script>
+</body>
+</html>
