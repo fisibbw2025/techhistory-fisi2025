@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --color-ink: #e7e1d4;
+  --color-panel: #fffdf8;
+  --color-panel-2: #f4efe4;
+  --color-line: #c9c0b0;
+  --color-fg: #241f1a;
+  --color-muted: #5e564c;
+  --color-cyan: #1a3f8b;
+  --color-amber: #8a3b24;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    background: var(--color-ink);
+    color: var(--color-fg);
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--color-ink);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-cyan) 22%, white);
+    color: var(--color-fg);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 3px;
+  }
+
+  input[type="date"] {
+    color-scheme: light;
+  }
+}
+
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+}
+
+.frame {
+  background: var(--color-panel);
+  border: 3px double var(--color-fg);
+}
+
+.slide-in {
+  animation: rise 280ms ease;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-in {
+    animation: none;
+  }
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
