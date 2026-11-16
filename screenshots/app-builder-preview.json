@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "TechDock · IT-Geschichte",
+      "hasCanvas": false,
+      "bodyTextLen": 1927,
+      "bodyTextHash": "4f71d017f40f9bd5c319e17e3d852b294cea687f531e676b9d1cc4ce9ab728b1",
+      "bodyTextPrefix": "TechDock · Schauraum Heute in der IT-Geschichte Kurz erzählt: wa",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "TechDock · IT-Geschichte",
+      "hasCanvas": false,
+      "bodyTextLen": 1921,
+      "bodyTextHash": "4fe232338bf1a39000a1db5d52f2d4a902c60fec8571a9ca676cd2bdc7d6f77f",
+      "bodyTextPrefix": "TechDock · Schauraum Heute in der IT-Geschichte Kurz erzählt: wa",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
